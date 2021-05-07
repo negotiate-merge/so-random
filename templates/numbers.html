@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Numbers
+{% endblock %}
+
+{% block main %}
+    <h3>{{ message }}</h3>
+    <table class="table">
+        <tbody>
+            {% for line in lines %}
+            <tr>
+                <td>
+                    <span class="ball">{{ line[0] }}</span>
+                    <span class="ball">{{ line[1] }}</span>
+                    <span class="ball">{{ line[2] }}</span>
+                    <span class="ball">{{ line[3] }}</span>
+                    <span class="ball">{{ line[4] }}</span>
+                    <span class="ball">{{ line[5] }}</span>
+                    <span class="ball">{{ line[6] }}</span>
+                    <span class="powerball">{{ line[7] }}</span>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p><a href="/">{{ link }}</a></p>
+{% endblock %}
