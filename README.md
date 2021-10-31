@@ -1,8 +1,10 @@
 # So Random - README.md
 
-This is my final project submission for CS50, titled So Random. At the onset of Covid I heard in the media of an $80 million powerball draw. I had recently been made redundant at work and thought I might try my luck with the lottery having not played lotto previously. 
+This is my final project submission for CS50, titled So Random. At the onset of Covid I heard in the media of an $80 million powerball draw. I had recently been made redundant at work and thought I might try my luck with the lottery having not played lotto previously.
 
-I navigated to a ticket vendor website and noticed they made reference to the frequency of ball numbers being drawn and that they had specified these numbers in to two catagory's, hot and cold. The website did not offer the functionality however to generate number sequences based on whether numbers were hot or cold. Frustrated by this, I set out to create this functionality with my project.
+I navigated to a ticket vendor website and noticed they made reference to the frequency of ball numbers being drawn and that they had specified these numbers in to two catagory's, hot and cold. The website did not offer the functionality however to generate number sequences based on whether numbers were hot or cold.
+
+Frustrated by this, I set out to create this functionality with my project.
 
 ## How does it work?
 
