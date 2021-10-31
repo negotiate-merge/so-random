@@ -26,9 +26,22 @@ This is the backbone of the application - it defines the functionality of the Fl
 
 `/usage` Serves a page that shows the user how to use dev Tools to run the script in order to automate the process of filling the lottery vendors webform.
 
+### `gen.py`
+This file is where I have written all of my functions in order to keep them out of sight of the main application. Running through the functions from top to bottom:
+
+`get_date(lastDrawn)` This function is called from the `dbUpdate` function. The purpose of this function is to detirmine if the last scraped draw added to the local database was in excess of 7 days prior to the current date. 
+
+`aggregate(db)` pulls the last 52 weeks draws from the local database and detirmines each numbers catagory, hot or cold, for game balls and power balls.
+
+`dbUpdate(URL, db)` is the function that does the web-scraping of the results. It will only run if the current date is greater than the next scheduled draw date via the use of `get_date`. It filters out the ad's that are present in the table of results, and reformates the data prior to inserting into the local database.
+
+`drawBall(code)` returns a randomly generated game ball number dependent on the code that is passed in 'h for hot', 'c for cold' or 'r for random'
+
+`drawPower(code)` the same as drawBall except returns a powerball
+
+`changeState()` changes all of the aggregated numbers from the `aggregate` function from string types to int types. 
+
+`getTemp(db)` originally this calculated last draw statistics for numerical presentation on the homepage. Most of it is deprecated now in favour of graphical representation using css. Now it just returns the the results of the last known draw for display on the home page.
 
 
 
-if you debated certain design choices, explaining why you made them. 
-
-Ensure you allocate sufficient time and energy to writing a README.md that you are proud of and that documents your project thoroughly. Be proud of it!
