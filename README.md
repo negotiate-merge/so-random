@@ -17,7 +17,14 @@ There are two pools of balls, game balls (there are 7 game balls drawn per draw)
 
 ## Description of files
 
-`app.py` is the backbone of the application - it defines the Flask web-server and handles all of the backend functionality. I have tried to keep this file compact to make it easier to deal with 
+### `app.py` 
+This is the backbone of the application - it defines the functionality of the Flask web-server on which the web application is built. I have tried to keep this file as compact as possible to make it easier to read. There are three routes within the application:
+
+/   
+
+/generate
+
+/usage
 
 multiple paragraphs in length
 
