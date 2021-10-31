@@ -20,15 +20,15 @@ There are two pools of balls, game balls (there are 7 game balls drawn per draw)
 ### `app.py` 
 This is the backbone of the application - it defines the functionality of the Flask web-server on which the web application is built. I have tried to keep this file as compact as possible to make it easier to read. There are three routes within the application:
 
-`/` Ensures that the backend data to be served is current then renders the homepage
+`/` Ensures that the backend data to be served is current and serves and renders the homepage
 
-/generate
+`/generate` Gets form data from the homepage and parses it to generate the random number sequences. The homepage allows the user to add additional parameter rows to the form throught the use of Javascript. The /generate route has the functionality to iterate over these added rows dynamically.
 
-/usage
+`/usage` Serves a page that shows the user how to use dev Tools to run the script in order to automate the process of filling the lottery vendors webform.
 
-multiple paragraphs in length
 
-what each of the files you wrote for the project contains and does
+
+
 if you debated certain design choices, explaining why you made them. 
 
 Ensure you allocate sufficient time and energy to writing a README.md that you are proud of and that documents your project thoroughly. Be proud of it!
