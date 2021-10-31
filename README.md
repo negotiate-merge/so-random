@@ -20,7 +20,7 @@ There are two pools of balls, game balls (there are 7 game balls drawn per draw)
 ### `app.py` 
 This is the backbone of the application - it defines the functionality of the Flask web-server on which the web application is built. I have tried to keep this file as compact as possible to make it easier to read. There are three routes within the application:
 
-`/` Ensures that the backend data to be served is current and serves and renders the homepage
+`/` Ensures that the backend data to be served is current and serves and renders the homepage.
 
 `/generate` Gets form data from the homepage and parses it to generate the random number sequences. The homepage allows the user to add additional parameter rows to the form throught the use of Javascript. The /generate route has the functionality to iterate over these added rows dynamically.
 
