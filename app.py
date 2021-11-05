@@ -1,11 +1,8 @@
 from cs50 import SQL
-import csv
-from flask import Flask, redirect, render_template, request, session
+from flask import Flask, render_template, request
 from flask_session import Session
 from tempfile import mkdtemp
 from gen import *
-import requests
-import sys
 
 
 # Configure application
@@ -50,90 +47,23 @@ def index():
        
         # Retrieve additional info for display on home page
         lastRecord = db.execute("SELECT MAX(drawDate) AS drawDate FROM results")[0]['drawDate']
+        # Reformat date 
         latestDate = f"{lastRecord[8:]}-{lastRecord[5:7]}-{lastRecord[0:4]}"
 
-        return render_template('index.html', latest=latestDate, coldNumbers=", ".join(aggregated['coldNumbers']), 
-        hotNumbers=", ".join(aggregated['hotNumbers']), coldPowers=", ".join(aggregated['coldPowers']), 
-        hotPowers=", ".join(aggregated['hotPowers']), hotNums=stat['hot'], coldNums=stat['cold'], power=stat['power'],
-        ldn=", ".join(stat['lastNums']), ldp=stat['lastPower'])
-        
+        return render_template('index.html', latest=latestDate, coldNumbers=aggregated['coldNumbers'], 
+        hotNumbers=aggregated['hotNumbers'], coldPowers=aggregated['coldPowers'], 
+        hotPowers=aggregated['hotPowers'], ldn=stat['lastNums'], ldp=stat['lastPower'])
+
 
 @app.route("/generate", methods=["GET", "POST"])
 def generate():
     if request.method == "POST":
-        # Get paramters from web form
-        hh = int(request.form.get('hh'))
-        hc = int(request.form.get('hc'))
-        ch = int(request.form.get('ch'))
-        cc = int(request.form.get('cc'))
-        r = int(request.form.get('r'))
-        h = int(request.form.get('h'))
-        custom = int(request.form.get('c'))
-        power = request.form.get('power')
-
-        # Store the generated numbers
+        # Store Drawn numbers
         thisDraw = []
 
-        changeState()
-        # Hot Hot generator
-        print("hh")
-        while hh > 0:
-            balls = 0
-            drawn = []
-            while balls < 7:
-                b = drawBall('h')
-                if b not in drawn:
-                    drawn.append(b)
-                    balls += 1
-            drawn.append(drawPower('h'))
-            thisDraw.append(drawn)
-            hh -= 1
-
-        # Hot Cold generator
-        print("hc")
-        while hc > 0:
-            balls = 0
-            drawn = []
-            while balls < 7:
-                b = drawBall('h')
-                if b not in drawn:
-                    drawn.append(b)
-                    balls += 1
-            drawn.append(drawPower('c'))
-            thisDraw.append(drawn)
-            hc -= 1
-
-        # Cold Cold generator
-        print("cc")
-        while cc > 0:
-            balls = 0
-            drawn = []
-            while balls < 7:
-                b = drawBall('c')
-                if b not in drawn:
-                    drawn.append(b)
-                    balls += 1
-            drawn.append(drawPower('c'))
-            thisDraw.append(drawn)
-            cc -= 1
-
-        # Cold Hot generator
-        print("ch")
-        while ch > 0:
-            balls = 0
-            drawn = []
-            while balls < 7:
-                b = drawBall('c')
-                if b not in drawn:
-                    drawn.append(b)
-                    balls += 1
-            drawn.append(drawPower('h'))
-            thisDraw.append(drawn)
-            ch -= 1
-
-        # Random generator
-        print("r")
-        while r > 0:
+        # Generate random numbers
+        randomNos = int(request.form.get('random'))
+        while randomNos > 0:
             balls = 0
             drawn = []
             while balls < 7:
@@ -143,34 +73,64 @@ def generate():
                     balls += 1
             drawn.append(drawPower('r'))
             thisDraw.append(drawn)
-            r -= 1
+            randomNos -= 1
 
-        # Custom generator
-        while custom > 0:
-            balls = 0
-            drawn = []
-            while balls < h:
-                b = drawBall('h')
-                if b not in drawn:
-                    drawn.append(b)
-                    balls += 1
-            while balls < 7:
-                b = drawBall('c')
-                if b not in drawn:
-                    drawn.append(b)
-                    balls += 1
-            if power == 'hot':
-                drawn.append(drawPower('h'))
-            else:
-                drawn.append(drawPower('c'))
-            thisDraw.append(drawn)
-            custom -= 1
+        # Converts stringified numbers to integers
+        changeState()
 
-        print(thisDraw)
-        # Open the buy tickets page in a new tab and insert numbers into the form
+        '''
+        Dynamic generation of hot cold selections
+        '''
+        # Integer for concatenation to names
+        rowCount = 1
 
-        
-        
+        while ('hot' + str(rowCount)) in request.form:
+            names = ['hot', 'power', 'count']
+
+            # Dynamic key name assignment for form
+            hotRow = names[0] + str(rowCount)
+            powerRow = names[1] + str(rowCount)
+            countRow = names[2] + str(rowCount)
+
+            # Get values from web form
+            hot = int(request.form.get(f'{hotRow}'))
+            count = int(request.form.get(f'{countRow}'))
+            power = request.form.get(f'{powerRow}')
+            
+            # Variable heat number generator
+            # For each line
+            while count > 0:
+                balls = 0
+                drawn = []
+                # Generate hot balls
+                while balls < hot:
+                    b = drawBall('h')
+                    if b not in drawn:
+                        drawn.append(b)
+                        balls += 1
+                # Generate cold balls
+                while balls < 7:
+                    b = drawBall('c')
+                    if b not in drawn:
+                        drawn.append(b)
+                        balls += 1
+                # Generate power ball
+                if power == 'hot':
+                    drawn.append(drawPower('h'))
+                else:
+                    drawn.append(drawPower('c'))
+                thisDraw.append(drawn)
+                count -= 1
+            
+            # Increment concatenation counter at top of main loop
+            rowCount += 1
+
         return render_template("/numbers.html", message="Your lotto numbers", link="Return to Parameter Selection", lines=thisDraw)
     else:
-        return render_template("/error.html", message="No numbers here", link="Return home to Enter Parameters.")
+        return render_template("/error.html", message="Woops, you seem to have lost your way", link="Return home to Enter Parameters.")
+
+@app.route("/usage", methods=["GET"])
+def usage():
+    if request.method == 'GET':
+        return render_template("/usage.html")
+        
