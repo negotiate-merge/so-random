@@ -1,8 +1,21 @@
-import csv
 import requests
 import random
 from bs4 import BeautifulSoup
+from datetime import date
+from datetime import timedelta
 from cs50 import SQL
+
+
+def get_date(lastDrawn):
+    """Detirmines if the current date is after the date of the last known draw"""
+    last = date.fromisoformat(lastDrawn)    # Create date object from string
+    next = last + timedelta(days=7)         # Calculate date of next draw
+    today = date.today()                    # Get todays date
+    
+    if today > next:
+        return True
+    else:
+        return False
 
 
 def aggregate(db):
@@ -74,48 +87,60 @@ def aggregate(db):
 
 
 def dbUpdate(URL, db):
-    """Run the webscraper and update db"""
-    # Get html content, setup BeautifulSoup object
-    page = requests.get(URL)
-    soup = BeautifulSoup(page.content, "html.parser")
+    """Scrape results and update db"""
+    # Check if latest results have already been inserted
+    lastDrawn = db.execute("SELECT MAX(drawDate) AS drawDate FROM results")[0]['drawDate']
     
-    # Find element by html id tag, get all tr elements & delete table header
-    results = soup.find(id="content")
-    draws = results.find_all('tr')
-    # Remove header
-    del(draws[0])
+    if get_date(lastDrawn):
+        print("Updating database")
 
-    # Parse data from html tags
-    for draw in draws:
-        # Refactor date for SQL insertion
-        rawDate = draw.find('a', href=True)['href']
-        date = rawDate[19:]
-        d = date[0:2]
-        m = date[3:5]
-        y = date[6:]
-        cleanDate = f"{y}-{m}-{d}"
-        print(cleanDate)
-
-        # Extract drawn numbers from soup
-        rawNumbers = draw.find_all("span", class_="result small powerball-ball")
-        powerball = draw.find("span", class_="result small powerball-powerball").text
-        numbers = []
+        # Get html content, setup BeautifulSoup object
+        page = requests.get(URL)
+        soup = BeautifulSoup(page.content, "html.parser")
         
-        for number in rawNumbers:
-            numbers.append(number.text)
+        # Remove ads from results table
+        for ad in soup.find_all("tr", {'class':'noBox'}): 
+            ad.decompose()
         
-        numString = ','.join(numbers)
-        
-        # Insert into db if not present
-        dbDates = db.execute("SELECT drawDate FROM results")
-        listedDates = []
+        # Find element by html id tag, get all tr elements & delete table header
+        results = soup.find(id="content")
+        draws = results.find_all('tr')
+        # Remove header
+        del(draws[0])
 
-        for date in dbDates:
-            listedDates.append(date['drawDate'])
+        # Parse data from html tags
+        for draw in draws:
+            # Refactor date for SQL insertion
+            rawDate = draw.find('a', href=True)['href']
+            date = rawDate[19:]
+            d = date[0:2]
+            m = date[3:5]
+            y = date[6:]
+            cleanDate = f"{y}-{m}-{d}"
+            print(cleanDate)
 
-        if cleanDate not in listedDates:
-            db.execute("INSERT INTO results (numbers, powerball, drawDate) VALUES (:n, :p, :date)", 
-            n=numString, p=powerball, date=cleanDate)
+            # Extract drawn numbers from soup
+            rawNumbers = draw.find_all("li", class_="result medium pb ball dark ball")
+            powerball = draw.find("li", class_="result medium pb ball dark powerball").text
+            numbers = []
+            
+            for number in rawNumbers:
+                numbers.append(number.text)
+            
+            numString = ','.join(numbers)
+            
+            # Insert into db if not present
+            dbDates = db.execute("SELECT drawDate FROM results")
+            listedDates = []
+
+            for date in dbDates:
+                listedDates.append(date['drawDate'])
+
+            if cleanDate not in listedDates:
+                db.execute("INSERT INTO results (numbers, powerball, drawDate) VALUES (:n, :p, :date)", 
+                n=numString, p=powerball, date=cleanDate)
+    else:
+        print("Database up to date")
 
 
 # Draw normal balls based on hotness
@@ -141,22 +166,8 @@ def drawPower(code):
             break
         elif code == 'r':
             break
-    print(f"Power = {n}")
+    #print(f"Power = {n}")
     return n
-
-
-def change():
-    iChange = "data.csv"
-
-    f = open(iChange, "w", newline='')
-    f.close()
-
-    with open(iChange, "a", newline='') as f:
-        writer = csv.writer(f, quoting=csv.QUOTE_NONE)
-        writer.writerow(coldNumbers)
-        writer.writerow(hotNumbers)
-        writer.writerow(coldPowers)
-        writer.writerow(hotPowers)
 
 
 def changeState():
