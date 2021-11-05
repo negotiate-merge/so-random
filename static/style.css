@@ -1,4 +1,4 @@
-.ball
+.hot
 {
 border-spacing: 0;
 padding: 0;
@@ -11,7 +11,7 @@ border-radius: 60px;
 display: inline-block;
 zoom: 1;
 top: 0;
-background: #ffa600;
+background: #ff0000;
 box-shadow: inset #ff5400 0 0 18px 6px;
 color: #FFF;
 font-size: 22px;
@@ -22,24 +22,7 @@ line-height: 36px;
 margin-bottom: 4px;
 }
 
-.boldn
-{
-    font-size: 2rem;
-}
-
 .cold
-{
-    /* color for cold table cells */
-    background-color: rgb(130, 130, 255);
-}
-
-.hot
-{
-    /* color for hot table cells */
-    background-color: rgb(255, 130, 130);
-}
-
-.powerball
 {
     border-spacing: 0;
     padding: 0;
@@ -61,6 +44,24 @@ margin-bottom: 4px;
     height: 36px;
     line-height: 36px;
     margin-bottom: 4px;
+}
+
+.bounce 
+{
+    margin-left: 30px;
+}
+
+.center {
+    margin: auto;
+    width: 80%;
+}
+
+.script-area
+{
+    color: white;
+    text-align: left;
+    background-color: black;
+    padding: 6px 3px 1px 12px;
 }
 
 nav .navbar-brand
@@ -93,3 +94,7 @@ main img
     max-width: 100%;
 }
 
+p
+{
+    text-align: left;
+}
