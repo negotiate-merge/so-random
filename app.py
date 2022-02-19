@@ -15,7 +15,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 db = SQL("sqlite:///silo.db")
 
 # URL for web scraping results
-URL = 'https://australia.national-lottery.com/powerball/results-archive-2021'
+URL = 'https://australia.national-lottery.com/powerball/results-archive-2022'
 
 # Ensure responses aren't cached
 @app.after_request
