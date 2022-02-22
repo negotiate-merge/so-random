@@ -1,33 +1,6 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Numbers
-{% endblock %}
-
-{% block main %}
-    <h3>{{ message }}</h3>
-    <table class="table">
-        <tbody>
-            {% for line in lines %}
-            <tr>
-                <td>
-                    <span class="ball">{{ line[0] }}</span>
-                    <span class="ball">{{ line[1] }}</span>
-                    <span class="ball">{{ line[2] }}</span>
-                    <span class="ball">{{ line[3] }}</span>
-                    <span class="ball">{{ line[4] }}</span>
-                    <span class="ball">{{ line[5] }}</span>
-                    <span class="ball">{{ line[6] }}</span>
-                    <span class="powerball">{{ line[7] }}</span>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    <p><a href="/">{{ link }}</a></p>
-{% endblock %}{% extends "layout.html" %}
-
-{% block title %}
     Your Numbers
 {% endblock %}
 
@@ -61,19 +34,25 @@
     
 <article class="script-area" id="autoFill">
     <pre style="color: white;">
-const autoFill = function () {
+const autoFill = async function () {
+    // Provides a pause between each line fill - required for page to update the DOM
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     const numbers = </pre>
     <div id="lines">
         {{ lines }};
     </div>
 <pre style="color: white;">
 
-    const tables = document.getElementsByClassName('css-1hqcqs8-Root');
-    const balls = tables[0].querySelectorAll('input');
-    const pballs = tables[1].querySelectorAll('input');
-
     for (let h = 0; h < numbers.length; h++) {
         line = numbers[h];
+        
+        // Gain access to number selection fields
+        const balls = document.querySelectorAll('[data-id="numberGrids_numbers_hiddenCheckbox"]');
+        const pballs = document.querySelectorAll('[data-id="numberGrids_powerball_hiddenCheckbox"]');
+        
         for (let i = 0; i < line.length; i++) {
             if (i < line.length - 1) {
                 for (let j = 0; j < balls.length; j++) {
@@ -86,6 +65,7 @@ const autoFill = function () {
                 for (let j = 0; j < pballs.length; j++) {
                     if (parseInt(pballs[j].id, 10) === line[i]) {
                         pballs[j].click();
+                        await sleep(1000);
                         break;
                     }
                 }
@@ -99,7 +79,7 @@ const autoFill = function () {
     <script>
         //Script to copy
         const insertNumbers = document.querySelector('#lines').innerHTML;
-        const fill = `const autoFill = function () {const numbers = ${insertNumbers};const tables = document.getElementsByClassName('css-1hqcqs8-Root');const balls = tables[0].querySelectorAll('input');const pballs = tables[1].querySelectorAll('input');for (let h = 0; h < numbers.length; h++) {line = numbers[h];for (let i = 0; i < line.length; i++) {if (i < line.length - 1) {for (let j = 0; j < balls.length; j++) {if (parseInt(balls[j].id, 10) === line[i]) {balls[j].click();break;}}} else {for (let j = 0; j < pballs.length; j++){if (parseInt(pballs[j].id, 10) === line[i]){pballs[j].click();break;}}}}}}`
+        const fill = `const autoFill = async function () {function sleep (ms) {return new Promise(resolve => setTimeout(resolve, ms));} const numbers = ${insertNumbers}; for (let h = 0; h < numbers.length; h++) {line = numbers[h];const balls = document.querySelectorAll('[data-id="numberGrids_numbers_hiddenCheckbox"]');const pballs = document.querySelectorAll('[data-id="numberGrids_powerball_hiddenCheckbox"]'); for (let i = 0; i < line.length; i++) {if (i < line.length - 1) {for (let j = 0; j < balls.length; j++) {if (parseInt(balls[j].id, 10) === line[i]) {balls[j].click();break;}}} else {for (let j = 0; j < pballs.length; j++){if (parseInt(pballs[j].id, 10) === line[i]){pballs[j].click(); await sleep(1000);break;}}}}}}`
         
 
         // Button event listener for copyying to clipboard
