@@ -18,7 +18,7 @@ def get_date(lastDrawn):
         return False
 
 
-def aggregate(db):
+def aggregate(db, weeks):
     # Respective hot/cold thresholds
     normalMedian = 11 #10
     powerMedian = 3 #3
@@ -46,8 +46,12 @@ def aggregate(db):
         else:
             numbers[str(n)] = 0
 
-    # Get past years draws
-    pool = db.execute("SELECT numbers, powerball FROM results ORDER BY drawDate DESC LIMIT 52")
+    # Get past years draws for current heat
+    pool = db.execute("SELECT numbers, powerball FROM results ORDER BY drawDate DESC LIMIT ?", weeks)
+
+    # Delete first record for the previous weeks results
+    if (weeks == 53):
+        del(pool[0]) 
 
     # Count ball draw occurances
     for draw in pool:

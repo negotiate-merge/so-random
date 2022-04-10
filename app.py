@@ -40,7 +40,9 @@ def index():
         dbUpdate(URL, db)
 
         # Aggregate ball counts
-        aggregated = aggregate(db)
+        aggregated = aggregate(db, 52)
+        # Ball heat for accurate display of the previous draw heat
+        lastAggregated = aggregate(db, 53)
 
         # Get temp stats of last draw
         stat = getTemp(db)
@@ -50,7 +52,9 @@ def index():
         # Reformat date 
         latestDate = f"{lastRecord[8:]}-{lastRecord[5:7]}-{lastRecord[0:4]}"
 
-        return render_template('index.html', latest=latestDate, coldNumbers=aggregated['coldNumbers'], 
+        return render_template('index.html', latest=latestDate, previousColdNums=lastAggregated['coldNumbers'], 
+        previousHotNums=lastAggregated['hotNumbers'], previousColdPows=lastAggregated['coldPowers'],
+        previousHotPows=lastAggregated['hotPowers'], coldNumbers=aggregated['coldNumbers'], 
         hotNumbers=aggregated['hotNumbers'], coldPowers=aggregated['coldPowers'], 
         hotPowers=aggregated['hotPowers'], ldn=stat['lastNums'], ldp=stat['lastPower'])
 
