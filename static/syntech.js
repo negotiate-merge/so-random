@@ -8,6 +8,16 @@ const pBalls = {
 	hot: []
 }
 
+const previousBalls = {
+	cold: [],
+	hot: []
+}
+
+const previousPBalls = {
+	cold: [],
+	hot: []
+}
+
 
 // Function to catagorize ball heat from html output from backend
 const returnNumbers = function(element) {
@@ -37,6 +47,26 @@ const returnNumbers = function(element) {
 				pBalls.hot.push(parseInt(elements[i].innerHTML, 10));
 			}
 			break;
+		case 'previousCold':
+			for (let i = 0; i < elements.length; i++) {
+				previousBalls.cold.push(parseInt(elements[i].innerHTML, 10));
+			}
+			break;
+		case 'previousHot':
+			for (let i = 0; i < elements.length; i++) {
+				previousBalls.hot.push(parseInt(elements[i].innerHTML, 10));
+			}
+			break;
+		case 'previousColdP':
+			for (let i = 0; i < elements.length; i++) {
+				previousPBalls.cold.push(parseInt(elements[i].innerHTML, 10));
+			}
+			break;
+		case 'previousHotP':
+			for (let i = 0; i < elements.length; i++) {
+				previousPBalls.hot.push(parseInt(elements[i].innerHTML, 10));
+			}
+		break;
 		default:
 			console.log('Error detirmining which balls are hot and cold.');
 	}
@@ -74,10 +104,30 @@ const color = function(num, catagory) {
 		}
 		return false;
 	}
+
+	if (catagory === 'previousBall') {
+		// Return true if num matches a cold ball else false
+		for (let x = 0; x < previousBalls.cold.length; x++) {
+			if (num === previousBalls.cold[x]) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	if (catagory === 'previousPBall') {
+		// Return true if num matches a cold ball else false
+		for (let x = 0; x < previousPBalls.cold.length; x++) {
+			if (num === previousPBalls.cold[x]) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 
 
-// Function to add rows to form table
+// Add rows to form table
 let rowCount = 2;
 
 const addRow = function() {
@@ -106,7 +156,7 @@ const addRow = function() {
 }
 
 
-// Function to copy script to clipboard
+// Copy script to clipboard
 const copyScript = function () {
 	// I got help with this from https://www.30secondsofcode.org/articles/s/copy-text-to-clipboard-with-javascript
 	const el = document.createElement('textarea');

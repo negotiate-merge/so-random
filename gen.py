@@ -49,7 +49,7 @@ def aggregate(db, weeks):
     # Get past years draws for current heat
     pool = db.execute("SELECT numbers, powerball FROM results ORDER BY drawDate DESC LIMIT ?", weeks)
 
-    # Delete first record for the previous weeks results
+    # Delete first record (most recent result) for the previous weeks results
     if (weeks == 53):
         del(pool[0]) 
 

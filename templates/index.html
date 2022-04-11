@@ -31,7 +31,7 @@
             </span>
         </p>
     </div><br><br>
-    
+
     <div style="text-align: left;">
         <p><strong>Standard Balls</strong></p>
         <span id="hot" style="margin: 0 auto;">
@@ -319,13 +319,44 @@
         <button class="btn btn-primary rs" type="submit">Get Numbers!</button>
     </form>
 
-<script>
-/* THESE ARE THE BALL HEATS FOR COLORING THE LAST DRAWN NUMBERS CORRECTLY
-previousColdNums=lastAggregated['coldNumbers'], 
-        previousHotNums=lastAggregated['hotNumbers'], previousColdPows=lastAggregated['coldPowers'],
-        previousHotPows=lastAggregated['hotPowers']*/
+    <!--  Begin experimentation of hidden fields  -->
 
-// Get catagorised numbers by id
+    <div style="text-align: left;">
+        <span id="previousHot" style="margin: 0 auto;">
+            {% for num in previousHotNums %}
+            <span class="hot" style="display: none">{{ num }}</span>
+            {% endfor %}
+        </span><br>
+        <span id="previousCold" style="margin: 0 auto;">
+            {% for num in previousColdNums %}
+                <span class="cold" style="display: none;">{{ num }}</span>
+            {% endfor %}
+        </span>
+    </div>
+
+    <div style="text-align: left;">
+        <span id="previousHotP" style="margin: 0 auto;">
+            {% for num in previousHotPows %}
+                <span class="hot" style="display: none;">{{ num }}</span>
+            {% endfor %}
+        </span><br>        
+        <span id="previousColdP" style="margin: 0 auto;">
+            {% for num in previousColdPows %}
+                <span class="cold" style="display: none;">{{ num }}</span>
+            {% endfor %}
+        </span>
+    </div>
+
+    <!--  End expererimentation of hidden fields  -->
+
+<script>
+// Get previous draws number heat from hidden fields
+const previousColdNums = document.getElementById('previousCold');
+const previousHotNums = document.getElementById('previousHot');
+const previousColdPows = document.getElementById('previousColdP')
+const previousHotPows = document.getElementById('previousHotP')
+
+// Get current number heat from catagorised numbers by id
 const coldNumbers = document.getElementById('cold');
 const hotNumbers = document.getElementById('hot');
 const coldPowers = document.getElementById('coldP');
@@ -336,6 +367,10 @@ returnNumbers(coldNumbers);
 returnNumbers(hotNumbers);
 returnNumbers(coldPowers);
 returnNumbers(hotPowers);
+returnNumbers(previousColdNums);
+returnNumbers(previousHotNums);
+returnNumbers(previousColdPows);
+returnNumbers(previousHotPows);
 
 // Populates sessionStorage for use across pages
 populateStorage();
@@ -355,10 +390,10 @@ for (let i = 0; i < lastNumberElements.length; i++) {
 for (let i = 0; i < lastNumbers.length; i++) {
     if (i < lastNumbers.length - 1) {
         // Standard game balls
-        color(lastNumbers[i], 'ball') ? lastNumberElements[i].setAttribute('class', 'cold') : lastNumberElements[i].setAttribute('class', 'hot');
+        color(lastNumbers[i], 'previousBall') ? lastNumberElements[i].setAttribute('class', 'cold') : lastNumberElements[i].setAttribute('class', 'hot');
     } else {
         // Power ball
-        color(lastNumbers[i], 'pBall') ? lastNumberElements[i].setAttribute('class', 'cold bounce') : lastNumberElements[i].setAttribute('class', 'hot bounce');
+        color(lastNumbers[i], 'previousPBall') ? lastNumberElements[i].setAttribute('class', 'cold bounce') : lastNumberElements[i].setAttribute('class', 'hot bounce');
     }
 }
 </script>

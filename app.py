@@ -44,6 +44,13 @@ def index():
         # Ball heat for accurate display of the previous draw heat
         lastAggregated = aggregate(db, 53)
 
+        '''
+        print("this weeks heat check")
+        print(aggregated)
+        print("Last weeks heat check")
+        print(lastAggregated)
+        '''
+
         # Get temp stats of last draw
         stat = getTemp(db)
        
