@@ -87,6 +87,13 @@ def aggregate(db, weeks):
     aggregates['coldPowers'] = coldPowers
     aggregates['hotPowers'] = hotPowers
 
+    # Clears number tracking arrays for use on the next run
+    if (weeks == 53):
+        coldNumbers = []
+        hotNumbers = []
+        coldPowers = []
+        hotPowers = []
+
     return aggregates
 
 
@@ -184,28 +191,13 @@ def changeState():
             count += 1
 
 
-def getTemp(db):
-    # Detirmine ratio of hot and cold balls drawn at last draw
-    stats = {}
-    hotNums = 0
-    coldNums = 0
-    power = 'cold'
+def getLastDraw(db):
+    # Get numbers from last draw
+    numbers = {}
     lastDraw = db.execute("SELECT numbers, powerball FROM results ORDER BY drawDate DESC LIMIT 1")
     
     nums =  lastDraw[0]['numbers'].split(',')
-    for n in nums:
-        if n in hotNumbers:
-            hotNums += 1
-        else:
-            coldNums += 1
-    
-    if lastDraw[0]['powerball'] in hotPowers:
-        power = 'hot'
+    numbers['lastNums'] = nums
+    numbers['lastPower'] = lastDraw[0]['powerball']
 
-    stats['hot'] = hotNums
-    stats['cold'] = coldNums
-    stats['power'] = power
-    stats['lastNums'] = nums
-    stats['lastPower'] = lastDraw[0]['powerball']
-
-    return stats
+    return numbers

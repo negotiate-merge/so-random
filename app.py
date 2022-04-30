@@ -39,20 +39,23 @@ def index():
         # Ensure database has the latest draw results
         dbUpdate(URL, db)
 
-        # Aggregate ball counts
-        aggregated = aggregate(db, 52)
-        # Ball heat for accurate display of the previous draw heat
+        # Aggregate ball counts for last week - must be run before the counter of next week because 
+        # the function will clear its global arrays if 53 is passed in as 2nd arg
         lastAggregated = aggregate(db, 53)
+        
+        # Aggregate ball counts for this week
+        aggregated = aggregate(db, 52)
+        
 
-        '''
-        print("this weeks heat check")
+        # Print heat for this week and last week
+        print("\nThis weeks heat check\n")
         print(aggregated)
-        print("Last weeks heat check")
+        print("\nLast weeks heat check\n")
         print(lastAggregated)
-        '''
+        
 
-        # Get temp stats of last draw
-        stat = getTemp(db)
+        # Get results from last draw
+        lastDraw = getLastDraw(db)
        
         # Retrieve additional info for display on home page
         lastRecord = db.execute("SELECT MAX(drawDate) AS drawDate FROM results")[0]['drawDate']
@@ -63,7 +66,7 @@ def index():
         previousHotNums=lastAggregated['hotNumbers'], previousColdPows=lastAggregated['coldPowers'],
         previousHotPows=lastAggregated['hotPowers'], coldNumbers=aggregated['coldNumbers'], 
         hotNumbers=aggregated['hotNumbers'], coldPowers=aggregated['coldPowers'], 
-        hotPowers=aggregated['hotPowers'], ldn=stat['lastNums'], ldp=stat['lastPower'])
+        hotPowers=aggregated['hotPowers'], ldn=lastDraw['lastNums'], ldp=lastDraw['lastPower'])
 
 
 @app.route("/generate", methods=["GET", "POST"])
